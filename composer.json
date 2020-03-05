@@ -1,0 +1,32 @@
+{
+	"name": "leuchtdiode/laminas-testing",
+	"description": "Laminas module for testing",
+	"type": "library",
+	"license": "MIT",
+	"homepage": "https://try2catch.com",
+	"authors": [
+		{
+			"name": "Alex Schloegl",
+			"email": "alex@try2catch.com",
+			"homepage": "https://try2catch.com",
+			"role": "Developer"
+		}
+	],
+	"keywords": [
+		"Laminas",
+		"Module",
+		"Testing"
+	],
+	"require": {
+		"php": ">=7.1",
+		"leuchtdiode/laminas-common": "^1.0",
+		"phpunit/phpunit": "^7.0",
+		"laminas/laminas-test": "^3.0",
+		"doctrine/data-fixtures": "^1.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"Testing\\": "src/"
+		}
+	}
+}
