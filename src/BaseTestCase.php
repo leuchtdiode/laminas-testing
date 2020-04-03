@@ -17,7 +17,7 @@ class BaseTestCase extends AbstractHttpControllerTestCase
 	/**
 	 * @throws ToolsException
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->reset();
 
