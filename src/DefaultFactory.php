@@ -1,10 +1,9 @@
 <?php
 namespace Testing;
 
-use Common\AbstractDefaultFactory;
 use Psr\Container\ContainerInterface;
 
-class DefaultFactory extends AbstractDefaultFactory
+class DefaultFactory
 {
 	/**
 	 * @var ContainerInterface
