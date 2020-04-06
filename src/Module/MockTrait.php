@@ -1,9 +1,9 @@
 <?php
 namespace Testing\Module;
 
-use PHPUnit\Framework\MockObject\Matcher\Invocation;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\MockObject\Stub;
 use Laminas\ServiceManager\ServiceManager;
 
@@ -12,8 +12,8 @@ trait MockTrait
 	/**
 	 * @param string $class
 	 * @param string $method
-	 * @param                 $result
-	 * @param null|Invocation $invocation
+	 * @param $result
+	 * @param null|InvocationOrder $invocation
 	 * @param null $with
 	 *
 	 * @return MockObject
@@ -22,7 +22,7 @@ trait MockTrait
 		string $class,
 		string $method,
 		$result,
-		?Invocation $invocation = null,
+		?InvocationOrder $invocation = null,
 		$with = null
 	): MockObject
 	{
@@ -47,8 +47,8 @@ trait MockTrait
 	/**
 	 * @param MockObject $mock
 	 * @param string $method
-	 * @param                 $result
-	 * @param null|Invocation $invocation
+	 * @param $result
+	 * @param null|InvocationOrder $invocation
 	 * @param null $with
 	 *
 	 * @return MockObject
@@ -57,7 +57,7 @@ trait MockTrait
 		MockObject $mock,
 		string $method,
 		$result,
-		?Invocation $invocation = null,
+		?InvocationOrder $invocation = null,
 		$with = null
 	): MockObject
 	{
