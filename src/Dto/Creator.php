@@ -6,54 +6,25 @@ use Psr\Container\ContainerInterface;
 
 abstract class Creator
 {
-	/**
-	 * @var ContainerInterface
-	 */
-	protected static $serviceManager;
+	protected static ContainerInterface $serviceManager;
 
-	/**
-	 * @var array
-	 */
-	private $data = [];
+	private array $data = [];
 
-	/**
-	 * @param mixed $serviceManager
-	 */
-	public static function setServiceManager($serviceManager): void
+	public static function setServiceManager(ContainerInterface $serviceManager): void
 	{
 		self::$serviceManager = $serviceManager;
 	}
 
-	/**
-	 */
 	abstract public static function getInstance();
 
-	/**
-	 * @param array $data
-	 *
-	 * @return mixed
-	 */
-	abstract protected function getDto($data);
+	abstract protected function getDto(array $data): mixed;
 
-	/**
-	 * @return string
-	 */
-	abstract protected function getEntityClass();
+	abstract protected function getEntityClass(): string;
 
-	/**
-	 * @return array
-	 */
-	abstract protected function getDefaultData();
+	abstract protected function getDefaultData(): array;
 
-	/**
-	 * @param $entity
-	 * @return mixed
-	 */
-	abstract protected function createDto($entity);
+	abstract protected function createDto(mixed $entity): mixed;
 
-	/**
-	 * @param array $data
-	 */
 	public function setData(array $data): void
 	{
 		$this->data = $data;
@@ -79,10 +50,7 @@ abstract class Creator
 		return $this;
 	}
 
-	/**
-	 * @return CreationResult
-	 */
-	public function create()
+	public function create(): CreationResult
 	{
 		$result = new CreationResult();
 

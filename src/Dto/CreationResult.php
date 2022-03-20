@@ -3,44 +3,26 @@ namespace Testing\Dto;
 
 class CreationResult
 {
-	/**
-	 * @var mixed
-	 */
-	private $dto;
+	private mixed $dto;
 
-	/**
-	 * @var mixed
-	 */
-	private $entity;
+	private mixed $entity;
 
-	/**
-	 * @return mixed
-	 */
-	public function getDto()
+	public function getDto(): mixed
 	{
 		return $this->dto;
 	}
 
-	/**
-	 * @param mixed $dto
-	 */
-	public function setDto($dto): void
+	public function setDto(mixed $dto): void
 	{
 		$this->dto = $dto;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getEntity()
+	public function getEntity(): mixed
 	{
 		return $this->entity;
 	}
 
-	/**
-	 * @param mixed $entity
-	 */
-	public function setEntity($entity): void
+	public function setEntity(mixed $entity): void
 	{
 		$this->entity = $entity;
 	}

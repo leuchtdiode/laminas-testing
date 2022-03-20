@@ -32,11 +32,7 @@ class BaseTestCase extends AbstractHttpControllerTestCase
 		$this->createEmptyDb();
 	}
 
-	/**
-	 * @param string $class
-	 * @return mixed
-	 */
-	protected function getService($class)
+	protected function getService(string $class): mixed
 	{
 		return $this->getApplicationServiceLocator()->get($class);
 	}

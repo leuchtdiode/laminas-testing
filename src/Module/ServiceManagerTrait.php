@@ -3,11 +3,7 @@ namespace Testing\Module;
 
 trait ServiceManagerTrait
 {
-	/**
-	 * @param string $className
-	 * @return mixed
-	 */
-	protected function getInstance($className)
+	protected function getInstance(string $className): mixed
 	{
 		return $this
 			->getApplicationServiceLocator()

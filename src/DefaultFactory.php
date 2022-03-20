@@ -5,35 +5,18 @@ use Psr\Container\ContainerInterface;
 
 class DefaultFactory
 {
-	/**
-	 * @var ContainerInterface
-	 */
-	private $container;
+	private ContainerInterface $container;
 
-	/**
-	 * @var string
-	 */
-	private $requestedName;
+	private string $requestedName;
 
-	/**
-	 * @param ContainerInterface $container
-	 * @param string $requestedName
-	 * @return bool
-	 */
 	public function canCreate(
 		ContainerInterface $container,
 		$requestedName
-	)
+	): bool
 	{
 		return strpos($requestedName, __NAMESPACE__ . '\\') === 0;
 	}
 
-	/**
-	 * @param ContainerInterface $container
-	 * @param string $requestedName
-	 * @param array|null $options
-	 * @return object|void
-	 */
 	public function __invoke(
 		ContainerInterface $container,
 		$requestedName,
