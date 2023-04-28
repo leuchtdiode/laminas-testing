@@ -1,11 +1,9 @@
 <?php
 namespace Testing\Module;
 
-use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\MockObject\Stub;
-use Laminas\ServiceManager\ServiceManager;
 
 trait MockTrait
 {
@@ -26,14 +24,12 @@ trait MockTrait
 		$with = null
 	): MockObject
 	{
-		/** @var MockBuilder $builder */
 		$builder = $this->getMockBuilder($class);
 
 		$mock = $builder
 			->disableOriginalConstructor()
 			->getMock();
 
-		/** @var ServiceManager $serviceLocator */
 		$serviceLocator = $this->getApplicationServiceLocator();
 
 		$serviceLocator->setAllowOverride(true);
