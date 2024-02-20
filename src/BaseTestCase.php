@@ -1,12 +1,12 @@
 <?php
 namespace Testing;
 
-use Doctrine\ORM\Tools\ToolsException;
+use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use Testing\Dto\Creator;
 use Testing\Module\DynamicFixturesTrait;
 use Testing\Module\MockTrait;
 use Testing\Module\ServiceManagerTrait;
-use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use Throwable;
 
 class BaseTestCase extends AbstractHttpControllerTestCase
 {
@@ -15,7 +15,7 @@ class BaseTestCase extends AbstractHttpControllerTestCase
 	use MockTrait;
 
 	/**
-	 * @throws ToolsException
+	 * @throws Throwable
 	 */
 	public function setUp(): void
 	{
@@ -32,8 +32,13 @@ class BaseTestCase extends AbstractHttpControllerTestCase
 		$this->createEmptyDb();
 	}
 
+	/**
+	 * @throws Throwable
+	 */
 	protected function getService(string $class): mixed
 	{
-		return $this->getApplicationServiceLocator()->get($class);
+		return $this
+			->getApplicationServiceLocator()
+			->get($class);
 	}
 }

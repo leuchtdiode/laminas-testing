@@ -3,14 +3,16 @@ namespace Testing\Module;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\ToolsException;
 use Testing\Dto\CreationResult;
 use Laminas\Mvc\Application;
+use Throwable;
 
 trait DynamicFixturesTrait
 {
+	private static bool $createdEmptyDb = false;
+
 	/**
-	 * @throws ToolsException
+	 * @throws Throwable
 	 */
 	private function createEmptyDb(): void
 	{
@@ -18,18 +20,23 @@ trait DynamicFixturesTrait
 		$app = $this->getApplication();
 
 		/** @var EntityManager $em */
-		$em = $app->getServiceManager()->get(EntityManager::class);
+		$em = $app
+			->getServiceManager()
+			->get(EntityManager::class);
 
 		$db      = __DIR__ . '/../../../../../data/testing/test.sqlite';
 		$emptyDb = __DIR__ . '/../../../../../data/testing/test-empty.sqlite';
 
-		if (!file_exists($emptyDb)) // TODO always create if something changed?
+		if (!self::$createdEmptyDb)
 		{
-			$metaData = $em->getMetadataFactory()->getAllMetadata();
+			$metaData = $em->getMetadataFactory()
+				->getAllMetadata();
 			$schema   = new SchemaTool($em);
 			$schema->createSchema($metaData);
 
 			copy($db, $emptyDb);
+
+			self::$createdEmptyDb = true;
 		}
 		else
 		{
@@ -38,13 +45,9 @@ trait DynamicFixturesTrait
 	}
 
 	/**
-	 * @param array $entities
-	 * @param bool $clearUnitOfWork
-	 * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-	 * @throws \Doctrine\ORM\ORMException
-	 * @throws \Doctrine\ORM\OptimisticLockException
+	 * @throws Throwable
 	 */
-	protected function fillDb(array $entities, bool $clearUnitOfWork = false)
+	protected function fillDb(array $entities, bool $clearUnitOfWork = false): void
 	{
 		/** @var EntityManager $entityManager */
 		$entityManager = $this->getInstance(EntityManager::class);

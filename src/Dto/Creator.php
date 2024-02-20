@@ -3,6 +3,7 @@ namespace Testing\Dto;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
+use Throwable;
 
 abstract class Creator
 {
@@ -50,6 +51,9 @@ abstract class Creator
 		return $this;
 	}
 
+	/**
+	 * @throws Throwable
+	 */
 	public function create(): CreationResult
 	{
 		$result = new CreationResult();

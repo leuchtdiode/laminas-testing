@@ -2,6 +2,9 @@
 namespace Testing;
 
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use Exception;
+use Throwable;
 
 class DefaultFactory
 {
@@ -14,17 +17,20 @@ class DefaultFactory
 		$requestedName
 	): bool
 	{
-		return strpos($requestedName, __NAMESPACE__ . '\\') === 0;
+		return str_starts_with($requestedName, __NAMESPACE__ . '\\');
 	}
 
+	/**
+	 * @throws Throwable
+	 */
 	public function __invoke(
-		ContainerInterface $container,
+		Containerinterface $container,
 		$requestedName,
 		array $options = null
 	)
 	{
-		$this->container		= $container;
-		$this->requestedName 	= $requestedName;
+		$this->container     = $container;
+		$this->requestedName = $requestedName;
 
 		$factoryClassName = $requestedName . 'Factory';
 
@@ -33,64 +39,65 @@ class DefaultFactory
 			return (new $factoryClassName())->__invoke($container, $requestedName, $options);
 		}
 
-		try
+		if (($object = $this->tryToLoadWithReflection()))
 		{
-			if (($object = $this->tryToLoadWithReflection()))
-			{
-				return $object;
-			}
-		}
-		catch (Exception $ex)
-		{
-			throw $ex;
+			return $object;
 		}
 
 		return new $requestedName;
 	}
 
 	/**
-	 * @return object|void
+	 * @throws Throwable
 	 */
-	private function tryToLoadWithReflection()
+	private function tryToLoadWithReflection(): ?object
 	{
 		$class = new ReflectionClass($this->requestedName);
 
-		if(!($constructor = $class->getConstructor()))
+		if (!($constructor = $class->getConstructor()))
 		{
-			return;
+			return null;
 		}
 
-		if(!($params = $constructor->getParameters()))
+		if (!($params = $constructor->getParameters()))
 		{
-			return;
+			return null;
 		}
 
 		$parameterInstances = [];
 
-		foreach($params as $p)
+		foreach ($params as $p)
 		{
-			if($p->getName() === 'container')
+			$type = $p->getType();
+
+			if ($p->getName() === 'container')
 			{
 				$parameterInstances[] = $this->container;
 			}
-			else if($p->getClass())
+			else
 			{
-				try
+				if ($type && !$type->isBuiltin())
 				{
-					$parameterInstances[] = $this->container->get(
-						$p->getClass()->getName()
-					);
-				}
-				catch (Exception $ex)
-				{
-					error_log($ex->getMessage());
+					try
+					{
+						$parameterInstances[] = $this->container->get(
+							$type->getName()
+						);
+					}
+					catch (Exception $ex)
+					{
+						error_log($ex->getMessage());
 
-					throw $ex;
+						throw $ex;
+					}
 				}
-			}
-			else if($p->isArray() && $p->getName() === 'config')
-			{
-				$parameterInstances[] = $this->container->get('Config');
+				else
+				{
+					if ($type && $type->getName() === 'array' && $p->getName() === 'config')
+					{
+						$parameterInstances[] = $this->container->get('Config');
+					}
+				}
 			}
 		}
 
