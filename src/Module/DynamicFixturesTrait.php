@@ -29,7 +29,18 @@ trait DynamicFixturesTrait
 
 		if (!self::$createdEmptyDb)
 		{
-			$metaData = $em->getMetadataFactory()
+			if (file_exists($db))
+			{
+				unlink($db);
+			}
+
+			if (file_exists($emptyDb))
+			{
+				unlink($emptyDb);
+			}
+
+			$metaData = $em
+				->getMetadataFactory()
 				->getAllMetadata();
 			$schema   = new SchemaTool($em);
 			$schema->createSchema($metaData);
