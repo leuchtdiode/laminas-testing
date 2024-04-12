@@ -32,6 +32,13 @@ class BaseTestCase extends AbstractHttpControllerTestCase
 		$this->createEmptyDb();
 	}
 
+	protected function tearDown(): void
+	{
+		$this->restoreEmptyDb();
+
+		parent::tearDown();
+	}
+
 	/**
 	 * @throws Throwable
 	 */

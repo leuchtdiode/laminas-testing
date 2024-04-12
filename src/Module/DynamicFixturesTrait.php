@@ -3,13 +3,17 @@ namespace Testing\Module;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Testing\Dto\CreationResult;
 use Laminas\Mvc\Application;
+use Testing\Dto\CreationResult;
 use Throwable;
 
 trait DynamicFixturesTrait
 {
-	private static bool $createdEmptyDb = false;
+	private string $db      = __DIR__ . '/../../../../../data/testing/test.sqlite';
+	private string $emptyDb = __DIR__ . '/../../../../../data/testing/test-empty.sqlite';
+	private string $dbHash  = __DIR__ . '/../../../../../data/testing/test.sqlite.hash';
+
+	private static ?string $schemaHash = null;
 
 	/**
 	 * @throws Throwable
@@ -24,36 +28,35 @@ trait DynamicFixturesTrait
 			->getServiceManager()
 			->get(EntityManager::class);
 
-		$db      = __DIR__ . '/../../../../../data/testing/test.sqlite';
-		$emptyDb = __DIR__ . '/../../../../../data/testing/test-empty.sqlite';
-
-		if (!self::$createdEmptyDb)
+		if (!self::$schemaHash)
 		{
-			if (file_exists($db))
-			{
-				unlink($db);
-			}
-
-			if (file_exists($emptyDb))
-			{
-				unlink($emptyDb);
-			}
-
-			touch($db);
-
 			$metaData = $em
 				->getMetadataFactory()
 				->getAllMetadata();
-			$schema   = new SchemaTool($em);
-			$schema->createSchema($metaData);
 
-			copy($db, $emptyDb);
+			$schema = new SchemaTool($em);
 
-			self::$createdEmptyDb = true;
+			self::$schemaHash = md5(json_encode($schema->getCreateSchemaSql($metaData)));
 		}
-		else
+
+		if (
+			!file_exists($this->dbHash)
+			|| file_get_contents($this->dbHash) !== self::$schemaHash
+		)
 		{
-			copy($emptyDb, $db);
+			$schema->createSchema($metaData);
+		}
+
+		copy($this->db, $this->emptyDb);
+
+		file_put_contents($this->dbHash, self::$schemaHash);
+	}
+
+	protected function restoreEmptyDb(): void
+	{
+		if (file_exists($this->emptyDb))
+		{
+			copy($this->emptyDb, $this->db);
 		}
 	}
 
