@@ -39,6 +39,8 @@ trait DynamicFixturesTrait
 				unlink($emptyDb);
 			}
 
+			touch($db);
+
 			$metaData = $em
 				->getMetadataFactory()
 				->getAllMetadata();
